@@ -1,0 +1,10 @@
+{
+  "name": "FormLab",
+  "description": "Interactive exercise teaching studio with real-time camera pose tracking, joint angle telemetry, rep counting, and live form coaching.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

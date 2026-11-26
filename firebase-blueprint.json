@@ -1,0 +1,159 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated FormLab user profile and Pro subscription state.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "role": {
+          "type": "string",
+          "enum": ["member", "owner"]
+        },
+        "proActive": {
+          "type": "boolean"
+        },
+        "proCurrency": {
+          "type": "string",
+          "enum": ["USD", "INR"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "displayName", "role", "proActive", "proCurrency", "createdAt", "updatedAt"]
+    },
+    "PrivateUserInfo": {
+      "title": "PrivateUserInfo",
+      "description": "Isolated PII storage for authenticated user email address.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "updatedAt"]
+    },
+    "ProAccessRequest": {
+      "title": "ProAccessRequest",
+      "description": "Paid FormLab Pro access request submitted by a non-owner user for $29 USD or ₹100 verification.",
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "requesterName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "requesterEmail": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["USD", "INR"]
+        },
+        "amountLabel": {
+          "type": "string",
+          "enum": ["$29 USD", "₹100"]
+        },
+        "paymentReference": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "requestId",
+        "uid",
+        "requesterName",
+        "requesterEmail",
+        "currency",
+        "amountLabel",
+        "paymentReference",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Server-provisioned admin marker document.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "grantedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "grantedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile and non-PII FormLab Pro state."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/PrivateUserInfo" },
+      "description": "Isolated PII document storing user email."
+    },
+    "/proRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/ProAccessRequest" },
+      "description": "Paid FormLab Pro verification requests reviewed by the owner."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Read-only admin registry."
+    }
+  }
+}
